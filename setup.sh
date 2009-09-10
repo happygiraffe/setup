@@ -21,11 +21,9 @@ fi
 # Setup gh token
 if [[ -z $token ]]; then
 	echo "GitHub token not found in global git config"
-	read -s -p "Please enter GitHub password for $user (this will not be saved): " -e password
-	echo "" # Because we didn't echo the user's return key above
-
 	echo "Fetching API token"
-	acct=$(curl -s https://github.com/account --user $user:$password)
+	# prompts: "Enter host password for user '$user':"
+	acct=$(curl -s https://github.com/account --user $user)
 	token=$(echo "$acct" | sed -n "/API Token/{s/.*API Token: <strong>\(.*\)<.strong>.*/\1/;p;}")
 
 	if [[ -n $token ]]; then
