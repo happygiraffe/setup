@@ -21,7 +21,7 @@ if [[ -z $token ]]; then
 	echo "" # Because we didn't echo the user's return key above
 
 	echo "Fetching API token"
-	acct=$(curl https://github.com/account --user $user:$password 2> /dev/null)
+	acct=$(curl -s https://github.com/account --user $user:$password)
 	token=$(echo "$acct" | grep "API Token" | sed "s/.*API Token: <strong>\(.*\)<.strong>.*/\1/")
 
 	if [[ -n $token ]]; then
