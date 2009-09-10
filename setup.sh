@@ -9,13 +9,13 @@ user=$(git config --global github.user)
 token=$(git config --global github.token)
 
 
-if [ -z "$user" ]; then
+if [[ -z $user ]]; then
 	read -p "GitHub username not found, please enter: " -e user
 fi
 
 
 # Setup gh token
-if [ -z "$token" ]; then
+if [[ -z $token ]]; then
 	echo "GitHub token not found in global git config"
 	read -s -p "Please enter GitHub password for $user (this will not be saved): " -e password
 	echo "" # Because we didn't echo the user's return key above
@@ -24,7 +24,7 @@ if [ -z "$token" ]; then
 	acct=$(curl https://github.com/account --user $user:$password 2> /dev/null)
 	token=$(echo "$acct" | grep "API Token" | sed "s/.*API Token: <strong>\(.*\)<.strong>.*/\1/")
 
-	if [ $token ]; then
+	if [[ -n $token ]]; then
 		echo "Saving GitHub token to global git config"
 		$(git config --global github.user $user)
 		$(git config --global github.token $token)
@@ -34,7 +34,7 @@ if [ -z "$token" ]; then
 	fi
 fi
 
-if [ -z "$acct" ]; then
+if [[ -z $acct ]]; then
 	echo "Fetching GitHub account details"
 	acct=$(curl -F "login=$user" -F "token=$token" https://github.com/account 2> /dev/null)
 fi
@@ -42,12 +42,12 @@ fi
 
 # Setup username
 gitname=$(git config --global user.name)
-if [ -z "$gitname" ]; then
+if [[ -z $gitname ]]; then
 	gitname=$user
 fi
 read -p "Enter git committer name (return to use '$gitname'): " -e newgitname
 
-if [ -z "$newgitname" ]; then
+if [[ -z $newgitname ]]; then
 	newgitname=$gitname
 fi
 $(git config --global user.name "$newgitname")
@@ -56,19 +56,19 @@ $(git config --global user.name "$newgitname")
 # Setup email
 ghemail=$(echo "$acct" | grep 'class="address"' | head -n1 | sed "s/.*>\([^@]*@[^<]*\)<.*/\1/")
 gitemail=$(git config --global user.email)
-if [ -z "$gitemail" ]; then
+if [[ -z $gitemail ]]; then
 	gitemail=$ghemail
 fi
 read -p "Enter git committer email (return to use '$gitemail'): " -e newgitemail
 
-if [ -z "$newgitemail" ]; then
+if [[ -z $newgitemail ]]; then
 	newgitemail=$gitemail
 fi
 $(git config --global user.email "$newgitemail")
 
 
 # SSH keys!
-if [ ! -f ~/.ssh/id_rsa ]; then
+if [[ ! -f ~/.ssh/id_rsa ]]; then
 	read -n1 -p "No id_rsa key found, generate one? (y/n) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
@@ -82,7 +82,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 	fi
 fi
 
-if [ -f ~/.ssh/id_rsa ]; then
+if [[ -f ~/.ssh/id_rsa ]]; then
 	read -n1 -p "Upload id_rsa key to your GitHub account? (y/n) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
@@ -93,9 +93,9 @@ fi
 
 
 # ssh-agent helper for msysgit
-if [ $MSYSTEM ]; then
+if [[ $MSYSTEM ]]; then
 	script_installed=$(grep "source ~/.ssh/agent-loader" ~/.bashrc 2> /dev/null)
-	if [ -z "$script_installed" ]; then
+	if [[ -z $script_installed ]]; then
 		echo ""
 		echo "You appear to be running Msysgit, would you like to use the ssh-agent loader?"
 		echo "This script will load ssh-agent to save your passphrase so that you don't need"
