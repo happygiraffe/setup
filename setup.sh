@@ -22,7 +22,7 @@ if [[ -z $token ]]; then
 
 	echo "Fetching API token"
 	acct=$(curl -s https://github.com/account --user $user:$password)
-	token=$(echo "$acct" | grep "API Token" | sed "s/.*API Token: <strong>\(.*\)<.strong>.*/\1/")
+	token=$(echo "$acct" | sed -n "/API Token/{s/.*API Token: <strong>\(.*\)<.strong>.*/\1/;p;}")
 
 	if [[ -n $token ]]; then
 		echo "Saving GitHub token to global git config"
