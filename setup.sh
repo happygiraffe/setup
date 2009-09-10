@@ -4,6 +4,10 @@
 # After the user enters his user/password, everything should be pre-populated.
 # The user can, of course, choose to override the values the script digs up for user.name and user.email
 
+die () {
+    echo "${0##*/}: $*" >&2
+    exit 1
+}
 
 user=$(git config --global github.user)
 token=$(git config --global github.token)
@@ -29,8 +33,7 @@ if [[ -z $token ]]; then
 		git config --global github.user $user
 		git config --global github.token $token
 	else
-		echo "Error retrieving token"
-		exit 1
+		die "Error retrieving token"
 	fi
 fi
 
